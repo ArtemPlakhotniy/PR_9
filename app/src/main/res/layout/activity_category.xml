@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/up_layout_for_pict_2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/math"
+            android:id="@+id/txt_math"
+            android:visibility="gone"
+            android:textColor="@android:color/white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/geo"
+            android:id="@+id/txt_geo"
+            android:visibility="gone"
+            android:textColor="@android:color/white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lit"
+            android:id="@+id/txt_lit"
+            android:visibility="gone"
+            android:textColor="@android:color/white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/phis"
+            android:id="@+id/txt_phis"
+            android:visibility="gone"
+            android:textColor="@android:color/white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/astr"
+            android:id="@+id/txt_astr"
+            android:visibility="gone"
+            android:textColor="@android:color/white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chem"
+            android:id="@+id/txt_chem"
+            android:visibility="gone"
+            android:textColor="@android:color/white"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:id="@+id/frame_for_chkBox"
+        android:gravity="center_vertical">
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/math"
+            android:id="@+id/check_math"
+            android:textColor="@android:color/white"
+            android:layout_weight="1"/>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/geo"
+            android:id="@+id/check_geo"
+            android:textColor="@android:color/white"
+            android:layout_weight="1"/>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/lit"
+            android:id="@+id/check_lit"
+            android:textColor="@android:color/white"
+            android:layout_weight="1"/>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/phis"
+            android:id="@+id/check_phis"
+            android:textColor="@android:color/white"
+            android:layout_weight="1"/>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/astr"
+            android:id="@+id/check_astr"
+            android:textColor="@android:color/white"
+            android:layout_weight="1"/>
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/chem"
+            android:id="@+id/check_chem"
+            android:textColor="@android:color/white"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:layout_weight="3"
+        android:id="@+id/footer_2">
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:text="New Button"
+            android:id="@+id/btn_play_2"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
+
+</LinearLayout>

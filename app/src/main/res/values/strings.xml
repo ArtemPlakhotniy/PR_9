@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PR_8</string>
+    <string name="math">Математика</string>
+    <string name="geo">Географія</string>
+    <string name="bio">Біологія</string>
+    <string name="chem">Хімія</string>
+    <string name="phis">Фізика</string>
+    <string name="lit">Література</string>
+    <string name="astr">Астрономія</string>
+</resources>
