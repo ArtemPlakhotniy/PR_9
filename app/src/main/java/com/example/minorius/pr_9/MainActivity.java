@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     public ImageView main_4;
     public ImageView main_5;
 
-    ImageView test;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         main_4 = (ImageView) findViewById(R.id.main_4);
         main_5 = (ImageView) findViewById(R.id.main_5);
 
+
         main_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -35,15 +36,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
         main_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent j = new Intent(getApplicationContext(), TwoPlayer_activity.class);
+                startActivity(j);
             }
         });
+
         main_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent k = new Intent(getApplicationContext(), Settings.class);
+                startActivity(k);
 
             }
         });
@@ -59,5 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 }

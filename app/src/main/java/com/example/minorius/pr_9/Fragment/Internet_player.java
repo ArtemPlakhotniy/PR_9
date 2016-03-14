@@ -1,10 +1,6 @@
 package com.example.minorius.pr_9.Fragment;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,21 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.minorius.pr_9.Communicator;
-import com.example.minorius.pr_9.GS;
 import com.example.minorius.pr_9.OnePlayer_activity;
 import com.example.minorius.pr_9.R;
 import com.example.minorius.pr_9.TwoPlayer_activity;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 
-import java.util.Random;
-
-public class Single_player extends Fragment{
+public class Internet_player extends Fragment{
 
     private TextView txt_question;
     private TextView txt_answer_a;
@@ -75,11 +63,11 @@ public class Single_player extends Fragment{
         txt_answer_d = (TextView) getActivity().findViewById(R.id.txt_answer_d);
 
 
-        txt_question.setText(OnePlayer_activity.gs.getQuestion());
-        txt_answer_a.setText(OnePlayer_activity.gs.getA());
-        txt_answer_b.setText(OnePlayer_activity.gs.getB());
-        txt_answer_c.setText(OnePlayer_activity.gs.getC());
-        txt_answer_d.setText(OnePlayer_activity.gs.getD());
+        txt_question.setText(TwoPlayer_activity.gs.getQuestion());
+        txt_answer_a.setText(TwoPlayer_activity.gs.getA());
+        txt_answer_b.setText(TwoPlayer_activity.gs.getB());
+        txt_answer_c.setText(TwoPlayer_activity.gs.getC());
+        txt_answer_d.setText(TwoPlayer_activity.gs.getD());
 
 
         btn_answer_a.setOnClickListener(new View.OnClickListener() {

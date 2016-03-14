@@ -17,8 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".OnePlayer_activity"/>
         <activity android:name=".Category_activity"/>
+        <activity android:name=".TwoPlayer_activity"/>
+        <activity android:name=".Settings"/>
     </application>
 
 </manifest>
