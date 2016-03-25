@@ -5,6 +5,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,38 +36,34 @@ import java.util.logging.Handler;
 
 public class TwoPlayer_activity extends AppCompatActivity implements Communicator {
 
-    static public int serverPort = 1701;
-    static public String address = "134.249.176.168";
-    Socket socket;
-    Internet_player internet_player;
-    static public GS gs;
+    private TextView fade_txt;
 
-    OutputStream sout;
-    InputStream sin;
-    DataOutputStream out;
-    DataInputStream in;
-
-    Firebase fb;
-    public static String PATH = "https://minorius.firebaseio.com";
-    static ArrayList<Integer> arrayList;
-    static ArrayList<Integer> arrayList_temp;
+    static final int serverPort = 1701;
+    static final String address = "134.249.176.164";
+    private Socket socket;
+    private DataOutputStream out;
+    private DataInputStream in;
     int flag_start = 202;
     int flag_finish = 303;
-    public static String CATEGORY_I;
 
+    private Internet_player internet_player;
+    public static GS gs;
 
+    private Firebase fb;
+    public static final String PATH = "https://minorius.firebaseio.com";
+    private String CATEGORY_I;
+    private ArrayList<Integer> arrayList;
+
+    static int[][] list_from_server;
+    static int question_in_time = 0;
+    static Connecting c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_two_player);
 
-        final Connecting c = new Connecting();
-        c.execute("start");
-
-//        FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        ft.add(R.id.buffer_fragment_i, single_player).commit();
-
+        fade_txt = (TextView) findViewById(R.id.fade_txt);
 
         Firebase.setAndroidContext(getApplicationContext());
         fb = new Firebase(PATH);
@@ -71,41 +71,45 @@ public class TwoPlayer_activity extends AppCompatActivity implements Communicato
         arrayList = new ArrayList<>();
         arrayList.add(flag_start);
 
-        arrayList_temp = new ArrayList<>();
+        list_from_server = new int[60][2];
+
+
 
         fb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     arrayList.add(((int) ds.getChildrenCount()));
+                    Toast.makeText(getApplicationContext(), ""+arrayList, Toast.LENGTH_LONG).show();
                 }
 
+                c = new Connecting();
+                c.execute(arrayList);
+
+
                 try {
-                    sout = socket.getOutputStream();
-                    out = new DataOutputStream(sout);
 
-
-                    for (int i = 0; i < arrayList.size(); i++) {
-                        out.writeInt(arrayList.get(i));
+                    int input_counter = 0;
+                    for(int i = 0; i<60; i++){
+                        list_from_server[i][0]=c.get().get(input_counter);
+                        list_from_server[i][1]=c.get().get(input_counter+1);
+                        input_counter = input_counter + 2;
                     }
 
-                    out.writeInt(flag_finish);
-                    out.flush();
 
 
-                } catch (IOException e) {
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
 
-                try {
+                    int temp_c = list_from_server[question_in_time][0];
+                    int temp_q = list_from_server[question_in_time][1];
 
-                    int temp_c = c.get().get(0);
-                    int temp_q = c.get().get(1);
+                    question_in_time++;
 
-                    Toast.makeText(getApplicationContext(), ""+temp_c+" "+temp_q, Toast.LENGTH_LONG).show();
-
-                    switch (temp_c){
+                    switch (temp_c) {
                         case 0:
                             CATEGORY_I = "/Lit/";
                             break;
@@ -125,8 +129,6 @@ public class TwoPlayer_activity extends AppCompatActivity implements Communicato
                             CATEGORY_I = "/phis/";
                             break;
                     }
-
-                    Toast.makeText(getApplicationContext(), ""+CATEGORY_I, Toast.LENGTH_LONG).show();
 
                     internet_player = new Internet_player();
 
@@ -171,14 +173,6 @@ public class TwoPlayer_activity extends AppCompatActivity implements Communicato
 
                         }
                     });
-
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-
             }
 
             @Override
@@ -187,36 +181,103 @@ public class TwoPlayer_activity extends AppCompatActivity implements Communicato
             }
         });
 
+
     }
 
     @Override
     public void fragmentCallBack(String a) {
 
         internet_player = new Internet_player();
+
+        fade_txt.setText(gs.getAnswer());
+
+
         if(a.equals(gs.getAnswer())){
-            try {
-                sout = socket.getOutputStream();
-                out = new DataOutputStream(sout);
-                out.writeInt(1);
-            } catch (IOException e) {
-                e.printStackTrace();
+            fade_txt.setTextColor(getResources().getColor(R.color.green));
+        }else{
+            fade_txt.setTextColor(getResources().getColor(R.color.red));
+        }
+
+        Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_txt);
+        fade_txt.startAnimation(anim);
+
+        int temp_c = list_from_server[question_in_time][0];
+        int temp_q = list_from_server[question_in_time][1];
+
+        question_in_time++;
+
+        switch (temp_c) {
+            case 0:
+                CATEGORY_I = "/Lit/";
+                break;
+            case 1:
+                CATEGORY_I = "/astr/";
+                break;
+            case 2:
+                CATEGORY_I = "/chem/";
+                break;
+            case 3:
+                CATEGORY_I = "/geo/";
+                break;
+            case 4:
+                CATEGORY_I = "/math/";
+                break;
+            case 5:
+                CATEGORY_I = "/phis/";
+                break;
+        }
+
+        Firebase.setAndroidContext(getApplicationContext());
+        fb = new Firebase(PATH + CATEGORY_I + temp_q);
+
+        fb.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                gs = new GS();
+
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    switch (ds.getKey()) {
+                        case "a":
+                            gs.setA(ds.getValue().toString());
+                            break;
+                        case "b":
+                            gs.setB(ds.getValue().toString());
+                            break;
+                        case "c":
+                            gs.setC(ds.getValue().toString());
+                            break;
+                        case "d":
+                            gs.setD(ds.getValue().toString());
+                            break;
+                        case "answer":
+                            gs.setAnswer(ds.getValue().toString());
+                            break;
+                        case "question":
+                            gs.setQuestion(ds.getValue().toString());
+                            break;
+                    }
+                }
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.buffer_fragment_i, internet_player).commit();
             }
 
-        }else{
-            try {
-                sout = socket.getOutputStream();
-                out = new DataOutputStream(sout);
-                out.writeInt(0);
-            } catch (IOException e) {
-                e.printStackTrace();
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
             }
-        }
+        });
+
+
+
+
     }
 
-    class Connecting extends AsyncTask<String, Void, ArrayList<Integer>>{
+    class Connecting extends AsyncTask<ArrayList<Integer>, Void, ArrayList<Integer>>{
 
         @Override
-        protected ArrayList doInBackground(String... params) {
+        protected ArrayList doInBackground(ArrayList... params) {
 
             ArrayList<Integer> temp;
             temp = new ArrayList<>();
@@ -225,10 +286,17 @@ public class TwoPlayer_activity extends AppCompatActivity implements Communicato
                 InetAddress ipAddress = InetAddress.getByName(address);
                 socket = new Socket(ipAddress, serverPort);
 
-                sin = socket.getInputStream();
-                in = new DataInputStream(sin);
+                in = new DataInputStream(socket.getInputStream());
+                out = new DataOutputStream(socket.getOutputStream());
 
-                for(int i = 0; i<2; i++){
+                for (int i = 0; i < arrayList.size(); i++) {
+                    out.writeInt(arrayList.get(i));
+                }
+
+                out.writeInt(flag_finish);
+                out.flush();
+
+                for(int i = 0; i<120; i++){
                     temp.add(in.readInt());
                 }
 
@@ -241,18 +309,17 @@ public class TwoPlayer_activity extends AppCompatActivity implements Communicato
 
         @Override
         protected void onPostExecute(ArrayList s) {
-            arrayList_temp = s;
             super.onPostExecute(s);
-
         }
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onDestroy() {
+
+        question_in_time = 0;
 
         try{
-            sout = socket.getOutputStream();
-            out = new DataOutputStream(sout);
+            out = new DataOutputStream(socket.getOutputStream());
             out.writeInt(888);
             out.flush();
             socket.close();
@@ -260,9 +327,62 @@ public class TwoPlayer_activity extends AppCompatActivity implements Communicato
         } catch (IOException e) {
             e.printStackTrace();
         }
-        super.onBackPressed();
-        if (socket.isClosed()){
-           // Toast.makeText(getApplicationContext(), "Socket closed", Toast.LENGTH_LONG).show();
+
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+
+        question_in_time = 0;
+
+        try{
+            out = new DataOutputStream(socket.getOutputStream());
+            out.writeInt(888);
+            out.flush();
+            socket.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+
+        question_in_time = 0;
+
+        try{
+            out = new DataOutputStream(socket.getOutputStream());
+            out.writeInt(888);
+            out.flush();
+            socket.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        question_in_time = 0;
+
+        if(socket.isConnected()){
+            try{
+                out = new DataOutputStream(socket.getOutputStream());
+                out.writeInt(888);
+                out.flush();
+                socket.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        super.onBackPressed();
+        //Toast.makeText(getApplicationContext(), ""+arrayList, Toast.LENGTH_LONG).show();
     }
 }

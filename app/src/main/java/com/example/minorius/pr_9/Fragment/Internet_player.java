@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.minorius.pr_9.Communicator;
-import com.example.minorius.pr_9.OnePlayer_activity;
 import com.example.minorius.pr_9.R;
 import com.example.minorius.pr_9.TwoPlayer_activity;
 
@@ -62,7 +61,8 @@ public class Internet_player extends Fragment{
         txt_answer_c = (TextView) getActivity().findViewById(R.id.txt_answer_c);
         txt_answer_d = (TextView) getActivity().findViewById(R.id.txt_answer_d);
 
-
+        
+        //задаєем текст вюшкам(питання, відповіді)
         txt_question.setText(TwoPlayer_activity.gs.getQuestion());
         txt_answer_a.setText(TwoPlayer_activity.gs.getA());
         txt_answer_b.setText(TwoPlayer_activity.gs.getB());
@@ -74,17 +74,17 @@ public class Internet_player extends Fragment{
             @Override
             public void onClick(View v) {
 
-                if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getA())) {
+                if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getA())) {
                     back_1_true.setVisibility(View.VISIBLE);
-                } else if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getB())) {
+                } else if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getB())) {
                     back_2_true.setVisibility(View.VISIBLE);
-                } else if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getC())) {
+                } else if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getC())) {
                     back_3_true.setVisibility(View.VISIBLE);
                 } else {
                     back_4_true.setVisibility(View.VISIBLE);
                 }
 
-                comm.fragmentCallBack(OnePlayer_activity.gs.getA());
+                comm.fragmentCallBack(TwoPlayer_activity.gs.getA());
             }
         });
 
@@ -92,17 +92,17 @@ public class Internet_player extends Fragment{
             @Override
             public void onClick(View v) {
 
-                if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getA())) {
+                if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getA())) {
                     back_1_true.setVisibility(View.VISIBLE);
-                } else if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getB())) {
+                } else if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getB())) {
                     back_2_true.setVisibility(View.VISIBLE);
-                } else if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getC())) {
+                } else if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getC())) {
                     back_3_true.setVisibility(View.VISIBLE);
                 } else {
                     back_4_true.setVisibility(View.VISIBLE);
                 }
 
-                comm.fragmentCallBack(OnePlayer_activity.gs.getB());
+                comm.fragmentCallBack(TwoPlayer_activity.gs.getB());
             }
         });
 
@@ -110,17 +110,17 @@ public class Internet_player extends Fragment{
             @Override
             public void onClick(View v) {
 
-                if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getA())) {
+                if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getA())) {
                     back_1_true.setVisibility(View.VISIBLE);
-                } else if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getB())) {
+                } else if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getB())) {
                     back_2_true.setVisibility(View.VISIBLE);
-                } else if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getC())) {
+                } else if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getC())) {
                     back_3_true.setVisibility(View.VISIBLE);
                 } else {
                     back_4_true.setVisibility(View.VISIBLE);
                 }
 
-                comm.fragmentCallBack(OnePlayer_activity.gs.getC());
+                comm.fragmentCallBack(TwoPlayer_activity.gs.getC());
             }
         });
 
@@ -128,17 +128,17 @@ public class Internet_player extends Fragment{
             @Override
             public void onClick(View v) {
 
-                if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getA())) {
+                if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getA())) {
                     back_1_true.setVisibility(View.VISIBLE);
-                } else if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getB())) {
+                } else if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getB())) {
                     back_2_true.setVisibility(View.VISIBLE);
-                } else if (OnePlayer_activity.gs.getAnswer().equals(OnePlayer_activity.gs.getC())) {
+                } else if (TwoPlayer_activity.gs.getAnswer().equals(TwoPlayer_activity.gs.getC())) {
                     back_3_true.setVisibility(View.VISIBLE);
                 } else {
                     back_4_true.setVisibility(View.VISIBLE);
                 }
 
-                comm.fragmentCallBack(OnePlayer_activity.gs.getD());
+                comm.fragmentCallBack(TwoPlayer_activity.gs.getD());
             }
         });
     }
