@@ -29,6 +29,16 @@
         android:id="@+id/buffer_fragment_i"
         android:background="@android:color/black">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/wait_txt"
+            android:text="Wait..."
+            android:textColor="@android:color/white"
+            android:textSize="40dp"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
 
     </FrameLayout>
 
