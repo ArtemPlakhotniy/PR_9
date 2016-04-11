@@ -1,0 +1,274 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
+
+public class MultiThread implements Runnable {
+	
+	private int[][] out_list;   
+    
+    private List<Integer> incom_list;    
+    private List<Integer> buffer_incom_list;
+    private List<Integer> answers;
+
+    private int random_category_t;
+    private int random_question_t;
+    
+    private int id_my;
+    private int id_enemy;
+    
+    int my_thread;
+    
+    Socket socket;    
+   
+    Random kh = new Random();
+    
+    public MultiThread(Socket s, int i){
+    	this.socket = s;
+    	this.my_thread = i;
+    }
+
+	@Override
+	public void run() {
+		
+		id_my = kh.nextInt(10000);
+		
+		Main.user_list.add(id_my);
+		
+		System.out.println(""+Main.user_list+", "+Main.user_list.indexOf(id_my));
+
+		while(Main.user_list.indexOf(id_my) != 0 || (Main.user_list.indexOf(id_my) == 0 && Main.user_list.size() == 1 && !Main.active_session.containsValue(id_my))){
+			System.out.println("" + Main.user_list+", " + Main.user_list.size() +", "+Main.user_list.indexOf(id_my));
+			if(Main.user_list.indexOf(id_my) != 0){
+				System.out.println("Ожидайте в очереди");
+				
+			}else if(Main.user_list.indexOf(id_my) == 0 && Main.user_list.size() == 1 && !Main.active_session.containsValue(id_my)){
+				System.out.println("Вы первый в очереди, ожидайте подключения соперников");
+			}
+			
+			try {
+				Thread.sleep(1000);
+				System.out.println("sleep");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				}
+			}
+		
+		System.out.println("flag");
+						
+		if(Main.user_list.indexOf(id_my) == 0 && !Main.active_session.containsValue(id_my)){
+
+			id_enemy = Main.user_list.get(1);
+			Main.active_session.put(id_my, id_enemy);
+						
+			System.out.println(""+Main.active_session);
+			
+			Main.user_list.remove(0);
+
+			
+			try {
+				while(!socket.isClosed()){
+
+				   	 incom_list = new LinkedList<>();
+				   	 buffer_incom_list = new LinkedList<>();
+				   	 out_list = new int[60][2];
+				   	 answers = new LinkedList<>();
+				        
+				        do{
+
+				            DataInputStream in = new DataInputStream(socket.getInputStream());
+				            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+				            
+				            			           		            
+				            do{
+				                buffer_incom_list.add(in.readInt());
+
+				                
+				            }while(!(buffer_incom_list.contains(303)) && !(buffer_incom_list.contains(888)));
+
+				            
+				            
+			                if(buffer_incom_list.contains(202)){
+			                	incom_list.addAll(buffer_incom_list);
+			                	
+					            if(incom_list.contains(202)){
+					                incom_list.remove(incom_list.indexOf(202));
+					            }
+					            if(incom_list.contains(303)){
+					            	incom_list.remove(incom_list.indexOf(303));
+					            }
+
+			                	 if(!incom_list.contains(888)){
+						           	 
+						           	 System.out.println("Send...");
+         	 
+						           	 for(int i = 0; i < 60; i++){
+						           	
+						                   	 random_category_t = kh.nextInt(incom_list.size());
+						                   	 random_question_t = kh.nextInt(incom_list.get(random_category_t));
+						                   	 
+						                   	 out_list[i][0] = random_category_t;
+						                   	 out_list[i][1] = random_question_t;
+						                   	 
+						                   	 Main.questions_for_session.add(random_category_t);
+						                   	 Main.questions_for_session.add(random_question_t);
+						                   	 						                   	 
+						                   	 out.writeInt(random_category_t);
+						                   	 out.writeInt(random_question_t);
+
+						                   	 System.out.print(""+out_list[i][0]+", ");
+						                   	 System.out.print(""+out_list[i][1]);
+						                   	 System.out.println("");
+
+						           	 }
+
+						           	 incom_list.clear();
+						           	 buffer_incom_list.clear();
+						           	 
+						           	 out.flush();
+
+						            }	                		                	
+			                	
+			                }
+			                
+			                else if(buffer_incom_list.contains(203)){				                	
+				              			                
+				                if(!Main.exchange_answers.containsKey(id_my)){
+				                	answers.add(buffer_incom_list.get(1));
+				                	Main.exchange_answers.put(id_my, answers);
+				                }else if(Main.exchange_answers.containsKey(id_my)){
+				                	Main.exchange_answers.get(id_my).add(buffer_incom_list.get(1));
+				                }
+	                
+				                buffer_incom_list.clear();
+				                System.out.print(""+Main.exchange_answers);
+				               
+
+			                }
+				            
+
+				        }while(!(buffer_incom_list.contains(888)));				        
+				      				        
+				        Main.exchange_answers.remove(id_my, answers);
+				        answers.clear();
+				        Main.active_session.remove(id_my, id_enemy);
+				        
+
+				      socket.close();
+
+				      incom_list.clear();
+
+				      if(socket.isClosed()){
+				          System.out.println("socket close");
+				      }
+
+				   }
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		if(Main.active_session.containsValue(id_my)){
+
+			System.out.println("questions..."+Main.questions_for_session);
+			
+			System.out.println("delete..."+Main.user_list);
+
+			try {
+				while(!socket.isClosed()){
+
+				   	 incom_list = new LinkedList<>();
+				   	 buffer_incom_list = new LinkedList<>();
+				   	 answers = new LinkedList<>();
+				        
+				        do{
+
+				            DataInputStream in = new DataInputStream(socket.getInputStream());
+				            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+				            
+				            			           		            
+				            do{
+				                buffer_incom_list.add(in.readInt());
+
+				                
+				            }while(!(buffer_incom_list.contains(303)) && !(buffer_incom_list.contains(888)));
+
+				            
+				            
+			                if(buffer_incom_list.contains(202)){
+			                	incom_list.addAll(buffer_incom_list);
+			                	
+					            if(incom_list.contains(202)){
+					                incom_list.remove(incom_list.indexOf(202));
+					            }
+					            if(incom_list.contains(303)){
+					            	incom_list.remove(incom_list.indexOf(303));
+					            }
+
+			                	 if(!incom_list.contains(888)){
+						           	 
+						           	 System.out.println("Send...");
+						           	 
+						           	 
+						           	                	 
+						           	 for(Integer i : Main.questions_for_session){
+						                   	 out.writeInt(i);
+
+						           	 }
+						           	 
+						           	 Main.questions_for_session.clear();
+						           	 Main.user_list.remove(0);
+
+						           	 incom_list.clear();
+						           	 buffer_incom_list.clear();
+						           	 
+						           	 out.flush();
+
+						            }	                		                	
+			                	
+			                }
+			                
+			                else if(buffer_incom_list.contains(203)){	
+			                	
+				                if(!Main.exchange_answers.containsKey(id_my)){
+				                	answers.add(buffer_incom_list.get(1));
+				                	Main.exchange_answers.put(id_my, answers);
+				                }else if(Main.exchange_answers.containsKey(id_my)){
+				                	Main.exchange_answers.get(id_my).add(buffer_incom_list.get(1));
+				                }
+	                
+				                buffer_incom_list.clear();
+				                System.out.print(""+Main.exchange_answers);
+
+			                }
+				            
+
+				        }while(!(buffer_incom_list.contains(888)));				        
+				        
+				        Main.exchange_answers.remove(id_my, answers);
+				        answers.clear();
+				        Main.active_session.remove(id_my, id_enemy);
+
+				      socket.close();
+
+				      incom_list.clear();
+
+				      if(socket.isClosed()){
+				          System.out.println("socket close");
+				      }
+
+				   }
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println("delete..."+Main.user_list);
+
+		}
+	}
+}
