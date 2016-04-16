@@ -43,7 +43,7 @@ public class TwoPlayer_activity extends AppCompatActivity implements Communicato
     private TextView answer_for_inet_game;
 
     static final int serverPort = 1701;
-    static final String address = "192.168.3.12";
+    static final String address = "134.249.176.164";
     static Socket socket;
     private DataOutputStream out;
     private DataInputStream in;
