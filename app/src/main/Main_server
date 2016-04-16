@@ -54,7 +54,7 @@ public class Main {
         	 th.start();
 
         	 System.out.println("Connecting...create new thread");
-        	 System.out.println(""+user_list);
+
 
 
          }
