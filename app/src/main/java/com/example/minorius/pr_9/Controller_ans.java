@@ -23,7 +23,6 @@ public class Controller_ans extends Service {
 
     private ArrayList<Integer> arrayList_ans;
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int a = intent.getIntExtra("ans", 454);

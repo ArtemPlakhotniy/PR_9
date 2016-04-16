@@ -22,6 +22,8 @@
         <activity android:name=".TwoPlayer_activity" />
         <activity android:name=".Settings" />
 
+        <service android:name=".ResultsFromServer" />
+
         <service
             android:name=".Controller_ans"
             android:enabled="true"

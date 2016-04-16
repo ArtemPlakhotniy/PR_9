@@ -119,13 +119,15 @@
         android:id="@+id/footer_2">
 
 
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:text="New Button"
+            android:text="Start"
             android:id="@+id/btn_play_2"
             android:layout_gravity="center" />
+
     </LinearLayout>
 
 
