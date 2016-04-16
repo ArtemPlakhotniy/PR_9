@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -17,6 +18,9 @@ public class MultiThread implements Runnable {
 
     private int random_category_t;
     private int random_question_t;
+    
+    private int flag_start_questions_for_client = 505;
+    
     
     private int id_my;
     private int id_enemy;
@@ -57,8 +61,6 @@ public class MultiThread implements Runnable {
 				e.printStackTrace();
 				}
 			}
-		
-		System.out.println("flag");
 						
 		if(Main.user_list.indexOf(id_my) == 0 && !Main.active_session.containsValue(id_my)){
 
@@ -69,6 +71,8 @@ public class MultiThread implements Runnable {
 			
 			Main.user_list.remove(0);
 
+            Thread th = new Thread(new Refresh(id_enemy, socket));
+            th.start();
 			
 			try {
 				while(!socket.isClosed()){
@@ -103,9 +107,7 @@ public class MultiThread implements Runnable {
 					            }
 
 			                	 if(!incom_list.contains(888)){
-						           	 
-						           	 System.out.println("Send...");
-         	 
+
 						           	 for(int i = 0; i < 60; i++){
 						           	
 						                   	 random_category_t = kh.nextInt(incom_list.size());
@@ -123,8 +125,12 @@ public class MultiThread implements Runnable {
 						                   	 System.out.print(""+out_list[i][0]+", ");
 						                   	 System.out.print(""+out_list[i][1]);
 						                   	 System.out.println("");
+						                   	 
+						                   	 out.flush();
 
 						           	 }
+						           	 
+						           	 out.writeInt(flag_start_questions_for_client);
 
 						           	 incom_list.clear();
 						           	 buffer_incom_list.clear();
@@ -145,8 +151,7 @@ public class MultiThread implements Runnable {
 				                }
 	                
 				                buffer_incom_list.clear();
-				                System.out.print(""+Main.exchange_answers);
-				               
+			               
 
 			                }
 				            
@@ -178,6 +183,20 @@ public class MultiThread implements Runnable {
 			System.out.println("questions..."+Main.questions_for_session);
 			
 			System.out.println("delete..."+Main.user_list);
+			
+			for(Map.Entry<Integer, Integer> a : Main.active_session.entrySet()){
+				Integer key = a.getKey();
+				Integer value  = a.getValue();
+				
+				if(value == id_my){
+					this.id_enemy = key;
+				}
+				
+				System.out.println("id_my = " + id_my + ", "+"id_enemy = "+ id_enemy);
+			}
+			
+            Thread th = new Thread(new RefreshSecondPlayer(id_enemy, socket));
+            th.start();
 
 			try {
 				while(!socket.isClosed()){
@@ -211,15 +230,14 @@ public class MultiThread implements Runnable {
 					            }
 
 			                	 if(!incom_list.contains(888)){
-						           	 
-						           	 System.out.println("Send...");
-						           	 
-						           	 
-						           	                	 
+          	 
 						           	 for(Integer i : Main.questions_for_session){
 						                   	 out.writeInt(i);
 
 						           	 }
+						           	 out.flush();
+						           	 
+						           	 out.writeInt(flag_start_questions_for_client);
 						           	 
 						           	 Main.questions_for_session.clear();
 						           	 Main.user_list.remove(0);
@@ -232,6 +250,8 @@ public class MultiThread implements Runnable {
 						            }	                		                	
 			                	
 			                }
+			                           
+
 			                
 			                else if(buffer_incom_list.contains(203)){	
 			                	
@@ -241,9 +261,8 @@ public class MultiThread implements Runnable {
 				                }else if(Main.exchange_answers.containsKey(id_my)){
 				                	Main.exchange_answers.get(id_my).add(buffer_incom_list.get(1));
 				                }
-	                
+				                
 				                buffer_incom_list.clear();
-				                System.out.print(""+Main.exchange_answers);
 
 			                }
 				            
