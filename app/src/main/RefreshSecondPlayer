@@ -1,0 +1,85 @@
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.LinkedList;
+import java.util.List;
+
+public class RefreshSecondPlayer implements Runnable {
+	
+	private int id_enemy;
+	private int count = 0;
+	private int true_answers;
+	private int flag_start_answers_for_client = 707;
+	
+	private List<Integer> list_with_res;
+	
+	Socket socket;   
+
+	public RefreshSecondPlayer(int id_enemy, Socket s) {
+			this.id_enemy = id_enemy;
+			this.socket = s;
+	}
+
+	@Override
+	public void run() {
+		
+		list_with_res = new LinkedList<Integer>();
+		
+		while(!socket.isClosed()){
+			
+			try {
+
+				while(Main.active_session.containsKey(id_enemy)){
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+					DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+					if(Main.exchange_answers.get(id_enemy) != null){
+						
+
+						if(Main.exchange_answers.get(id_enemy).size() > count){
+							System.out.println("Отправить "+Main.exchange_answers.get(id_enemy));
+							this.count = Main.exchange_answers.get(id_enemy).size();
+												
+							for(int a : Main.exchange_answers.get(id_enemy)){
+								if(a == 1){
+									this.true_answers++;
+								}
+							}
+
+							list_with_res.add(flag_start_answers_for_client);
+							list_with_res.add(true_answers);
+							
+							for(int a : list_with_res){
+								out.write(a);
+							}
+							
+							out.flush();
+							
+							System.out.println("Отправить "+list_with_res);
+							
+							list_with_res.clear();
+							
+							
+							System.out.println("Отправить "+true_answers);
+							
+							this.true_answers = 0;
+							
+						}
+					}					
+				}	
+
+			} 
+			catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+		}
+	}
+}
+
